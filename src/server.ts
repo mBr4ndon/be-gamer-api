@@ -5,6 +5,7 @@ import { router } from './routes';
 
 // Connect with Database
 import './database';
+import { HttpRequestError } from './utils/HttpRequestError';
 
 const app = express();
 // Recognize json
@@ -14,8 +15,8 @@ app.use(router);
 
 // Middleware to catch errors
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-    if (err instanceof Error) {
-        return res.status(400).json({
+    if (err instanceof HttpRequestError) {
+        return res.status(err.status).json({
             error: err.message
         });
     }

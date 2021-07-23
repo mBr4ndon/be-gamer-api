@@ -1,5 +1,6 @@
 import { getCustomRepository } from "typeorm";
 import { UsersRepository } from "../repositories/UsersRepository"
+import { HttpRequestError } from "../utils/HttpRequestError";
 
 interface IUserRequest {
     name: string;
@@ -14,13 +15,13 @@ class CreateUserService {
 
         // check if fields are empty
         if (!name || !email) {
-            throw new Error("User's email or name are not filled");
+            throw new HttpRequestError("User's email or name are not filled", 400);
         }
 
         // check if there is already an user with email
         const userAlreadyExists = await usersRepository.findOne({ email });
         if (userAlreadyExists) {
-            throw new Error("User already exists");
+            throw new HttpRequestError("User already exists", 400);
         }
 
         // create instance

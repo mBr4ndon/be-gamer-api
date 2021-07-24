@@ -1,21 +1,23 @@
 import { getCustomRepository } from "typeorm";
 import { UsersRepository } from "../repositories/UsersRepository"
 import { HttpRequestError } from "../utils/HttpRequestError";
+import { hash, genSalt } from 'bcryptjs';
 
 interface IUserRequest {
     name: string;
     email: string;
+    password: string;
     admin?: boolean;
 }
 
 class CreateUserService {
 
-    async execute({name, email, admin} : IUserRequest) {
+    async execute({name, email, password, admin = false} : IUserRequest) {
         const usersRepository = getCustomRepository(UsersRepository);
 
         // check if fields are empty
-        if (!name || !email) {
-            throw new HttpRequestError("User's email or name are not filled", 400);
+        if (!name || !email || !password) {
+            throw new HttpRequestError("User's fields missing", 400);
         }
 
         // check if there is already an user with email
@@ -24,10 +26,14 @@ class CreateUserService {
             throw new HttpRequestError("User already exists", 400);
         }
 
+        const salt = await genSalt(8);
+        const passwordHash = await hash(password, 8);
+
         // create instance
         const user = usersRepository.create({
             name,
             email,
+            password: passwordHash,
             admin
         });
 

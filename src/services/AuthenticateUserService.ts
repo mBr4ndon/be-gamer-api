@@ -30,7 +30,7 @@ class AuthenticateUserService {
 
         const token = sign({
             email: user.email
-        }, "3fbc88200f62776f43a4e7f3abe1c0de", {
+        }, process.env.TOKEN_KEY, {
             subject: user.id,
             expiresIn: "1d"
         });

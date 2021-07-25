@@ -26,7 +26,6 @@ class CreateUserService {
             throw new HttpRequestError("User already exists", 400);
         }
 
-        const salt = await genSalt(8);
         const passwordHash = await hash(password, 8);
 
         // create instance

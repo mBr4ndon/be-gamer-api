@@ -2,12 +2,18 @@ import 'reflect-metadata';
 import express, { NextFunction, Request, Response } from 'express';
 import "express-async-errors";
 import { router } from './routes';
+import cors from 'cors';
+import helmet from 'helmet';
 
 // Connect with Database
 import './database';
 import { HttpRequestError } from './utils/HttpRequestError';
 
 const app = express();
+
+app.use(cors());
+app.use(helmet());
+
 // Recognize json
 app.use(express.json());
 // Insert routes
